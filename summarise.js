@@ -8,5 +8,7 @@ let csv = d3.csv(
         };
     }
 );
+console.log("full business");
+console.log(csv);
 let total_distance = csv.forEach(run_datum => run_datum.distance_km).reduce((x, y) => x + y, 0);
 d3.select("#total-distance").textContent = total_distance;

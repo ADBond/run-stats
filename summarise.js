@@ -1,4 +1,4 @@
-let csv = d3.csv(
+d3.csv(
     "runs.csv",
     function(datum){
         console.log("run data read in nicely:");
@@ -11,7 +11,12 @@ let csv = d3.csv(
     function(csv_data){
         console.log("everything is:");
         console.log(csv_data);
-        let total_distance = csv_data.forEach(run_datum => run_datum.distance_km).reduce((x, y) => x + y, 0);
-        d3.select("#total-distance").textContent = total_distance;
+        // not sure why columns has joined the party here
+        delete csv_data.columns;
+        const distances = csv_data.map(run_datum => run_datum.distance_km);
+        console.log(distances);
+        const total_distance = distances.reduce((x, y) => x + y, 0);
+        console.log(total_distance);
+        d3.select("#total-distance").text(total_distance);
     }
 );

@@ -1,6 +1,7 @@
-#total-distance {
+.jazzy-stat {
     font-weight: bold;
     font-size: 1.2em;
+    color: #900;
 }
 
 body {

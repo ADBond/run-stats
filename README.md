@@ -19,3 +19,5 @@ and run the server:
 ```bash
 source start_server.sh
 ```
+
+The live-like page is then [here](http://127.0.0.1:5000/live).

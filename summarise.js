@@ -19,7 +19,15 @@ function leftoverSecondsFromSeconds(seconds){
     return seconds % 60;
 }
 function hmsStringFromSeconds(seconds){
-    return `${hoursFromSeconds(seconds)} hours, ${leftoverMinutesFromSeconds(seconds)} minutes, ${leftoverSecondsFromSeconds(seconds)} seconds`
+    const hours = hoursFromSeconds(seconds);
+    const minutes = leftoverMinutesFromSeconds(seconds);
+    const lo_seconds = leftoverSecondsFromSeconds(seconds);
+    // have mins and secs as a minimum, then everything else only as relevant
+    let time_string = `${minutes} minutes, ${lo_seconds} seconds`;
+    if (hours > 0){
+        time_string = `{hours} hours, {time_string}`;
+    }
+    return time_string
 }
 
 function isFiveK(distance_km){
@@ -56,6 +64,8 @@ d3.csv(
                 console.log(datum);
                 console.log(best_five);
                 if(datum.total_seconds < best_five.total_seconds){
+                    // best by total time currently only
+                    // TODO: best by pace (which would account for variation in distance!)
                     best_five = datum;
                 }
             }
@@ -66,5 +76,6 @@ d3.csv(
         d3.select("#total-distance-miles").text(kmToMiles(total_distance));
         d3.select("#total-time").text(hmsStringFromSeconds(total_seconds));
         d3.select("#total-time-seconds").text(total_seconds);
+        d3.select("#best-5k").text(hmsStringFromSeconds(best_five.total_seconds));
     }
 );

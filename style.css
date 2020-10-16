@@ -1,9 +1,12 @@
-.jazzy-stat {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #900;
+/* Copy a few bits from other projects, can tweak at a later stage */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  background-color: #CDD;
 }
 
-body {
-    font-size: 16px;
+.jazzy-stat {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #900;
 }

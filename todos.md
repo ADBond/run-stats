@@ -8,6 +8,7 @@
   - bests by pace to compensate variablity of distance
   - best pace per interval, with some sort of qualifier (c.f. batting/bowling average)
 - Total distance milestones
+  - Cricket run comparisons!
 - Total distance/time per time unit (week/month etc)
   - Tracking longest distance per interval
 - Longest distance tracking

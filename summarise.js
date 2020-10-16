@@ -1,7 +1,17 @@
 // TODO: nicer handling/conversions
+// TODO: stop mixing naming conventions you bellend
+function kmToRuns(distance_km){
+    // one run = distance between the creases
+    // according to MCC laws the popping crease is 4ft in front of the bowling crease
+    // 22 yards between bowling creases
+    // so one run = 22 yards - 8 feet = 58 feet = 17.68 m
+    const run_in_km = 0.01768;
+    return Math.floor(distance_km/run_in_km);
+}
+
 function kmToMiles(distanceKm, precision=2){
     const kmPerMile = 1.609;
-    const distanceMiles= distanceKm / kmPerMile;
+    const distanceMiles = distanceKm / kmPerMile;
     return distanceMiles.toFixed(precision);
 }
 
@@ -30,11 +40,31 @@ function hmsStringFromSeconds(seconds){
     return time_string
 }
 
+// max 0.1% tolerance officially I think, but let's be cool.
+// can always adjust these as we go, let's see what seems reasonable. Plucking kind of from my arse at the moment
+function within(distance_km, lower_limit, upper_limit){
+    return (lower_limit <= distance_km) && (distance_km <= upper_limit)
+}
 function isFiveK(distance_km){
     const tolerance = 0.05;
-    return ((5 - tolerance) < distance_km) && (distance_km < (5 + tolerance));
+    return within(distance_km, (5 - tolerance), (5 + tolerance));
+}
+function isTenK(distance_km){
+    const tolerance = 0.05;
+    return within(distance_km, (10 - tolerance), (10 + tolerance));
+}
+function isHalf(distance_km){
+    // reference value 21.0975 km
+    return within(distance_km, 21.1, 21.2);
+}
+function isMarathon(distance_km){
+    // reference value 42.195 km
+    // officially 42.15 to 42.24
+    // let's allow a little more at top end
+    return within(distance_km, 42.15, 42.3);
 }
 
+// TODO: make updating more modular so that one error doesn't nerf everything
 d3.csv(
     "runs.csv",
     function(datum){
@@ -54,9 +84,9 @@ d3.csv(
 
         // TODO: geting to the point where I need to start structuring this a bit more proper like
         const five_ks = csv_data.filter(datum => isFiveK(datum.distance_km));
-        const ten_ks = [];
-        const halfs = [];
-        const marathons = [];
+        const ten_ks = csv_data.filter(datum => isTenK(datum.distance_km));
+        const halfs = csv_data.filter(datum => isHalf(datum.distance_km));
+        const marathons = csv_data.filter(datum => isMarathon(datum.distance_km));
         let best_five = {"total_seconds": Infinity};
         five_ks.forEach(
             datum => {
@@ -70,6 +100,7 @@ d3.csv(
 
         d3.select("#total-distance").text(total_distance);
         d3.select("#total-distance-miles").text(kmToMiles(total_distance));
+        d3.select("#total-distance-runs").text(kmToRuns(total_distance));
         d3.select("#total-time").text(hmsStringFromSeconds(total_seconds));
         d3.select("#total-time-seconds").text(total_seconds);
 

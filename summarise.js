@@ -25,7 +25,7 @@ function hmsStringFromSeconds(seconds){
     // have mins and secs as a minimum, then everything else only as relevant
     let time_string = `${minutes} minutes, ${lo_seconds} seconds`;
     if (hours > 0){
-        time_string = `{hours} hours, {time_string}`;
+        time_string = `${hours} hours, ${time_string}`;
     }
     return time_string
 }

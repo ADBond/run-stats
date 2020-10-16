@@ -8,11 +8,6 @@ def make_app():
   print("App successfully created")
 
   @app.route("/")
-  def home_route():
-    print("fetching the d3 page...")
-    return "basic server"
-
-  @app.route("/live")
   def live_page_version():
     return send_file("index.html")
 

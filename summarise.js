@@ -64,6 +64,11 @@ function isMarathon(distance_km){
     return within(distance_km, 42.15, 42.3);
 }
 
+function recent(runs, offset=1){
+    // TODO: this should be beefed up to use dates, as may not be entered sequentially
+    return runs[runs.length - offset];
+}
+
 // TODO: make updating more modular so that one error doesn't nerf everything
 d3.csv(
     "runs.csv",
@@ -87,6 +92,7 @@ d3.csv(
         const ten_ks = csv_data.filter(datum => isTenK(datum.distance_km));
         const halfs = csv_data.filter(datum => isHalf(datum.distance_km));
         const marathons = csv_data.filter(datum => isMarathon(datum.distance_km));
+        // TODO: look at all this horrible repitition, and feel shame
         let best_five = {"total_seconds": Infinity};
         five_ks.forEach(
             datum => {
@@ -94,6 +100,16 @@ d3.csv(
                     // best by total time currently only
                     // TODO: best by pace (which would account for variation in distance!)
                     best_five = datum;
+                }
+            }
+        );
+        let best_ten = {"total_seconds": Infinity};
+        ten_ks.forEach(
+            datum => {
+                if(datum.total_seconds < best_ten.total_seconds){
+                    // best by total time currently only
+                    // TODO: best by pace (which would account for variation in distance!)
+                    best_ten = datum;
                 }
             }
         );
@@ -105,6 +121,7 @@ d3.csv(
         d3.select("#total-time-seconds").text(total_seconds);
 
         d3.select("#best-5k").text(hmsStringFromSeconds(best_five.total_seconds));
+        d3.select("#best-10k").text(hmsStringFromSeconds(best_ten.total_seconds));
 
         d3.select("#count-total").text(csv_data.length);
         d3.select("#count-5k").text(five_ks.length);
@@ -113,5 +130,12 @@ d3.csv(
         d3.select("#count-marathon").text(marathons.length);
         // yeah yeah I know
         d3.select("#count-misc").text(csv_data.length - five_ks.length - ten_ks.length - halfs.length - marathons.length);
+
+        const recent_run = recent(csv_data);
+        const penultimate_run = recent(csv_data, 2);
+        d3.select("#recent-1-distance").text(recent_run.distance_km);
+        d3.select("#recent-1-time").text(hmsStringFromSeconds(recent_run.total_seconds));
+        d3.select("#recent-2-distance").text(penultimate_run.distance_km);
+        d3.select("#recent-2-time").text(hmsStringFromSeconds(penultimate_run.total_seconds));
     }
 );

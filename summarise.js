@@ -130,6 +130,14 @@ d3.csv(
                 }
             }
         );
+        let longest = {"distance_km": 0};
+        csv_data.forEach(
+            datum => {
+                if(datum.distance_km > longest.distance_km){
+                    longest = datum;
+                }
+            }
+        )
 
         d3.select("#total-distance").text(total_distance);
         d3.select("#total-distance-miles").text(kmToMiles(total_distance));
@@ -139,6 +147,7 @@ d3.csv(
 
         d3.select("#best-5k").text(hmsStringFromSeconds(best_five.total_seconds));
         d3.select("#best-10k").text(hmsStringFromSeconds(best_ten.total_seconds));
+        d3.select("#longest-distance").text(longest.distance_km);
 
         d3.select("#count-total").text(csv_data.length);
         d3.select("#count-5k").text(five_ks.length);

@@ -19,8 +19,11 @@ function timeToSeconds(hours, minutes, seconds){
     return 3600*parseInt(hours) + 60*parseInt(minutes) + parseInt(seconds);
 }
 
+function daysFromSeconds(seconds){
+    return Math.floor(seconds / 86400);
+}
 function hoursFromSeconds(seconds){
-    return Math.floor(seconds/3600);
+    return Math.floor((seconds % 86400) / 3600);
 }
 function leftoverMinutesFromSeconds(seconds){
     return Math.floor((seconds % 3600) / 60);
@@ -29,17 +32,24 @@ function leftoverSecondsFromSeconds(seconds){
     return seconds % 60;
 }
 function hmsStringFromSeconds(seconds){
+    const days = daysFromSeconds(seconds);
     const hours = hoursFromSeconds(seconds);
     const minutes = leftoverMinutesFromSeconds(seconds);
     const lo_seconds = leftoverSecondsFromSeconds(seconds);
     // have mins and secs as a minimum, then everything else only as relevant
     let time_string = `${minutes} minutes, ${lo_seconds} seconds`;
-    if (hours > 0){
+    if (hours > 0 || days > 0){
         time_string = `${hours} hours, ${time_string}`;
+        if (days > 0){
+            time_string = `${days} days, ${time_string}`;
+        }
     }
+
     return time_string
 }
 
+// want a generalised categorisation - maybe suplement each with category: X type tag
+// if I do that then need non-overlapping boundaries
 // max 0.1% tolerance officially I think, but let's be cool.
 // can always adjust these as we go, let's see what seems reasonable. Plucking kind of from my arse at the moment
 function within(distance_km, lower_limit, upper_limit){
@@ -52,6 +62,9 @@ function isFiveK(distance_km){
 function isTenK(distance_km){
     const tolerance = 0.05;
     return within(distance_km, (10 - tolerance), (10 + tolerance));
+}
+function isTenToHalfMisc(distance_km){
+    return within(distance_km, 10.05, 21.1);
 }
 function isHalf(distance_km){
     // reference value 21.0975 km
@@ -92,6 +105,10 @@ d3.csv(
         const ten_ks = csv_data.filter(datum => isTenK(datum.distance_km));
         const halfs = csv_data.filter(datum => isHalf(datum.distance_km));
         const marathons = csv_data.filter(datum => isMarathon(datum.distance_km));
+        const sub_fives = [];
+        const five_tens = [];
+        const ten_halfs = csv_data.filter(datum => isTenToHalfMisc(datum.distance_km));
+        const half_fulls = [];
         // TODO: look at all this horrible repitition, and feel shame
         let best_five = {"total_seconds": Infinity};
         five_ks.forEach(
@@ -130,6 +147,10 @@ d3.csv(
         d3.select("#count-marathon").text(marathons.length);
         // yeah yeah I know
         d3.select("#count-misc").text(csv_data.length - five_ks.length - ten_ks.length - halfs.length - marathons.length);
+        d3.select("#count-misc-sub-5").text(sub_fives.length);
+        d3.select("#count-misc-5-10").text(five_tens.length);
+        d3.select("#count-misc-10-half").text(ten_halfs.length);
+        d3.select("#count-misc-half-marathon").text(half_fulls.length);
 
         const recent_run = recent(csv_data);
         const penultimate_run = recent(csv_data, 2);

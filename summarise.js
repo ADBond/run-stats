@@ -64,7 +64,7 @@ function isTenK(distance_km){
     return within(distance_km, (10 - tolerance), (10 + tolerance));
 }
 function isFiveToTenMisc(distance_km){
-    return within(distance_km, 5.05, 10.05);
+    return within(distance_km, 5.05, 9.95);
 }
 function isTenToHalfMisc(distance_km){
     return within(distance_km, 10.05, 21.1);

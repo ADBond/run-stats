@@ -6,3 +6,4 @@ number,day,month,year,distance_km,hours,minutes,seconds,notes
 5,19,10,2020,14.10,1,32,53,"road,sea,windy"
 6,21,10,2020,5.01,0,29,29,"road,park"
 7,22,10,2020,10.03,1,01,51,"road,sea"
+8,31,10,2020,5.63,0,32,50,"road,park,rainy,spooky"

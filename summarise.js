@@ -63,6 +63,9 @@ function isTenK(distance_km){
     const tolerance = 0.05;
     return within(distance_km, (10 - tolerance), (10 + tolerance));
 }
+function isFiveToTenMisc(distance_km){
+    return within(distance_km, 5.05, 10.05);
+}
 function isTenToHalfMisc(distance_km){
     return within(distance_km, 10.05, 21.1);
 }
@@ -106,7 +109,7 @@ d3.csv(
         const halfs = csv_data.filter(datum => isHalf(datum.distance_km));
         const marathons = csv_data.filter(datum => isMarathon(datum.distance_km));
         const sub_fives = [];
-        const five_tens = [];
+        const five_tens = csv_data.filter(datum => isFiveToTenMisc(datum.distance_km));
         const ten_halfs = csv_data.filter(datum => isTenToHalfMisc(datum.distance_km));
         const half_fulls = [];
         // TODO: look at all this horrible repitition, and feel shame

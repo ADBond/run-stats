@@ -17,3 +17,4 @@
 - Total distance/time per time unit (week/month etc)
   - Tracking longest distance per interval
 - ~~Longest distance tracking~~
+- Fix category boundaries - some will count as both currently

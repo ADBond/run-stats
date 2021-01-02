@@ -53,7 +53,7 @@ function hmsStringFromSeconds(seconds){
 // max 0.1% tolerance officially I think, but let's be cool.
 // can always adjust these as we go, let's see what seems reasonable. Plucking kind of from my arse at the moment
 function within(distance_km, lower_limit, upper_limit){
-    return (lower_limit <= distance_km) && (distance_km <= upper_limit)
+    return (lower_limit <= distance_km) && (distance_km < upper_limit)
 }
 function isUnderFiveMisc(distance_km){
     return within(distance_km, 0, 4.95)
@@ -74,7 +74,7 @@ function isTenToHalfMisc(distance_km){
 }
 function isHalf(distance_km){
     // reference value 21.0975 km
-    return within(distance_km, 21.1, 21.2);
+    return within(distance_km, 21.0, 21.2);
 }
 function isMarathon(distance_km){
     // reference value 42.195 km
@@ -103,7 +103,7 @@ d3.csv(
         const distances = csv_data.map(run_datum => run_datum.distance_km);
         const times = csv_data.map(run_datum => run_datum.total_seconds);
 
-        const total_distance = distances.reduce((x, y) => x + y, 0);
+        const total_distance = distances.reduce((x, y) => x + y, 0).toFixed(2);
         const total_seconds = times.reduce((x, y) => x + y, 0);
 
         // TODO: geting to the point where I need to start structuring this a bit more proper like
@@ -145,33 +145,46 @@ d3.csv(
             }
         )
 
-        d3.select("#total-distance").text(total_distance);
-        d3.select("#total-distance-miles").text(kmToMiles(total_distance));
-        d3.select("#total-distance-runs").text(kmToRuns(total_distance));
-        d3.select("#total-time").text(hmsStringFromSeconds(total_seconds));
-        d3.select("#total-time-seconds").text(total_seconds);
-
-        d3.select("#best-5k").text(hmsStringFromSeconds(best_five.total_seconds));
-        d3.select("#best-10k").text(hmsStringFromSeconds(best_ten.total_seconds));
-        d3.select("#longest-distance").text(longest.distance_km);
-
-        d3.select("#count-total").text(csv_data.length);
-        d3.select("#count-5k").text(five_ks.length);
-        d3.select("#count-10k").text(ten_ks.length);
-        d3.select("#count-half").text(halfs.length);
-        d3.select("#count-marathon").text(marathons.length);
-        // yeah yeah I know
-        d3.select("#count-misc").text(csv_data.length - five_ks.length - ten_ks.length - halfs.length - marathons.length);
-        d3.select("#count-misc-sub-5").text(sub_fives.length);
-        d3.select("#count-misc-5-10").text(five_tens.length);
-        d3.select("#count-misc-10-half").text(ten_halfs.length);
-        d3.select("#count-misc-half-marathon").text(half_fulls.length);
-
         const recent_run = recent(csv_data);
         const penultimate_run = recent(csv_data, 2);
-        d3.select("#recent-1-distance").text(recent_run.distance_km);
-        d3.select("#recent-1-time").text(hmsStringFromSeconds(recent_run.total_seconds));
-        d3.select("#recent-2-distance").text(penultimate_run.distance_km);
-        d3.select("#recent-2-time").text(hmsStringFromSeconds(penultimate_run.total_seconds));
+
+        const ids_to_info = {
+            "total-distance": total_distance,
+            "total-distance-miles": kmToMiles(total_distance),
+            "total-distance-runs": kmToRuns(total_distance),
+            "total-time": hmsStringFromSeconds(total_seconds),
+            "total-time-seconds": total_seconds,
+
+            "best-5k": hmsStringFromSeconds(best_five.total_seconds),
+            "best-10k": hmsStringFromSeconds(best_ten.total_seconds),
+            "longest-distance": hmsStringFromSeconds(longest.distance_km),
+
+            "count-total": csv_data.length,
+            "count-5k": five_ks.length,
+            "count-10k": ten_ks.length,
+            "count-half": halfs.length,
+            "count-marathon": marathons.length,
+
+            // TODO: mate, come on
+            "count-misc": csv_data.length - five_ks.length - ten_ks.length - halfs.length - marathons.length,
+            "count-misc-sub-5": sub_fives.length,
+            "count-misc-5-10": five_tens.length,
+            "count-misc-10-half": ten_halfs.length,
+            "count-misc-half-marathon": half_fulls.length,
+
+            
+            "recent-1-distance": recent_run.distance_km,
+            "recent-1-time": hmsStringFromSeconds(recent_run.total_seconds),
+            "recent-2-distance": penultimate_run.distance_km,
+            "recent-2-time": hmsStringFromSeconds(penultimate_run.total_seconds),
+        }
+
+        // TODO: is this idiomatically the way to do this?
+        const ids = Object.keys(ids_to_info);
+        ids.forEach(
+            (key) => {
+                d3.select(`#${key}`).text(ids_to_info[key]);
+            }
+        );
     }
 );

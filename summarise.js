@@ -157,7 +157,7 @@ d3.csv(
 
             "best-5k": hmsStringFromSeconds(best_five.total_seconds),
             "best-10k": hmsStringFromSeconds(best_ten.total_seconds),
-            "longest-distance": hmsStringFromSeconds(longest.distance_km),
+            "longest-distance": longest.distance_km,
 
             "count-total": csv_data.length,
             "count-5k": five_ks.length,

@@ -26,3 +26,4 @@ number,day,month,year,distance_km,hours,minutes,seconds,notes
 25,01,02,2021,5.02,0,32,13,"road,park,accompanied"
 26,02,02,2021,6.30,0,42,08,"road,sea,wet"
 27,04,02,2021,8.08,0,53,01,"road,sea,wet"
+28,06,02,2021,10.05,1,04,34,"road,sea"
